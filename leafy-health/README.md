@@ -8,7 +8,7 @@ gem install leafy-health
 ```
 or add to your Gemfile
 ```
-gem 'leqfy-health'
+gem 'leafy-health'
 ```
 
 installing the gem also takes care of the jar dependencies with jruby-1.7.16+
