@@ -35,12 +35,12 @@ simple in the sense that either call returns ```nil``` which means healthy or a 
 
 or with a health-check object
 
-    class AppCheck
+    class AppCheck < Leafy::Health::HealthCheck
       def call
         if app.crashed
           'application crashed'
         end
-      enf
+      end
     end
     registry.register( 'simple.class', AppCheck.new )
 
@@ -49,22 +49,45 @@ or with a health-check object
 here the call method gets an argument which allows to create both
 healthy and unhealthy states with message.
          
-    registry.register( 'app.block') do |health|
+    registry.register( 'app.block') do
       if app.crashed
-        health.unhealthy( 'application crashed' )
+        unhealthy( 'application crashed' )
       else
-        health.healthy( 'application ok' )
+        healthy( 'application ok' )
       end
     end
 
 or with a health-check object
 
-    class AppCheck
-      def call( health )
+    class AppCheck < Leafy::Health::HealthCheck
+      def call
         if app.crashed
-          health.unhealthy( 'application crashed' )
+          unhealthy( 'application crashed' )
         else
-          health.healthy( 'application ok' )
+          healthy( 'application ok' )
+        end
+      end
+    end
+    registry.register( 'app.class', AppCheck.new )
+
+### health checks with structural data as message
+
+    registry.register( 'app.block') do
+      if app.crashed
+        unhealthy( :host => 'localhost', :msg => 'not good' )
+      else
+        healthy( :host => 'localhost', :msg => 'application ok' )
+      end
+    end
+
+or as health-check object
+
+    class AppCheck < Leafy::Health::HealthCheck
+      def call
+        if app.crashed
+          unhealthy( :host => 'localhost', :msg => 'application crashed' )
+        else
+          healthy( :host => 'localhost', :msg => 'application ok' )
         end
       end
     end
