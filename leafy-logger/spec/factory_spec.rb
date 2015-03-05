@@ -1,0 +1,111 @@
+require_relative 'setup'
+require 'leafy/metrics/registry'
+require 'leafy/logger/factory'
+require 'fileutils'
+
+describe Leafy::Logger::Factory do
+
+  subject do
+    f = Leafy::Logger::Factory.new
+    f.appenders( Leafy::Logger::FileAppenderFactory.new( log ) )
+    f.configure( Leafy::Metrics::Registry.new, 'tester' )
+    f
+  end
+
+  let( :log ) { File.join( File.dirname( __FILE__ ), 'test.log' ) }
+  let( :logger1 ) { Leafy::Logger::Factory.get_logger 'my.app' }
+  let( :logger2 ) { Leafy::Logger::Factory.get_logger 'my.db' }
+
+  before { FileUtils.rm_f log }
+  after { FileUtils.rm_f log }
+
+  it 'can set appenders' do
+    expect( subject.appenders.size ).to eq 1
+
+    subject.appenders Leafy::Logger::ConsoleAppenderFactory.new
+    expect( subject.appenders.size ).to eq 1
+
+    subject.appenders( Leafy::Logger::ConsoleAppenderFactory.new,
+                       Leafy::Logger::FileAppenderFactory.new( log ) )
+    expect( subject.appenders.size ).to eq 2
+  end
+
+  it 'sets the default level' do
+    subject.level = 'INFO'
+    expect( subject.level ).to eq 'INFO'
+
+    subject.level 'DEBUG'    
+    expect( subject.level ).to eq 'DEBUG'
+  end
+
+  it 'can set the default log level' do
+    subject.level = 'INFO'
+
+    logger1.debug 'debug1'
+    logger1.info 'good'
+    logger1.warn 'good'
+    logger2.debug 'debug2'
+    logger2.info 'good'
+    logger2.warn 'good'
+ 
+    subject.stop
+
+    lines = File.read( log ).split( /\n/ )
+
+    expect( lines.size ).to eq 4
+    lines.each do |line|
+      expect( line ).to match /INFO|WARN/
+      expect( line ).to match /good/
+    end
+  end
+
+  it 'can set a specific log level' do
+    expect( subject.loggers ).to eq Hash[]
+
+    subject[ 'my.app' ] = 'WARN'
+
+    expect( subject.loggers ).to eq Hash[ 'my.app' => 'WARN' ]
+
+    logger1.debug 'debug1'
+    logger1.info 'info1'
+    logger1.warn 'good'
+    logger2.debug 'debug2'
+    logger2.info 'good'
+    logger2.warn 'good'
+
+    subject.stop
+
+    lines = File.read( log ).split( /\n/ )
+
+    expect( lines.size ).to eq 3
+    lines.each do |line|
+      expect( line ).to match /INFO|WARN/
+      expect( line ).to match /good/
+    end
+  end
+
+  it 'can set a specific log level' do
+    expect( subject.loggers ).to eq Hash[]
+
+    subject.loggers( 'my' => 'WARN' )
+
+    expect( subject.loggers ).to eq Hash[ 'my' => 'WARN' ]
+
+    logger1.debug 'debug1'
+    logger1.info 'info1'
+    logger1.warn 'good'
+    logger2.debug 'debug2'
+    logger2.info 'info2'
+    logger2.warn 'good'
+
+    subject.stop
+
+    lines = File.read( log ).split( /\n/ )
+
+    expect( lines.size ).to eq 2
+    lines.each do |line|
+      expect( line ).to match /WARN/
+      expect( line ).to match /good/
+    end
+  end
+end
