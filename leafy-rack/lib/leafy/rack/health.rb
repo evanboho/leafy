@@ -9,7 +9,11 @@ module Leafy
       def self.response( health, env )
         data = health.run_health_checks
         is_healthy = data.values.all? { |r| r.healthy? }
-        json = env[ 'QUERY_STRING' ] == 'pretty' ? JSON.pretty_generate( data.to_hash ) : data.to_hash.to_json
+        json = if env[ 'QUERY_STRING' ] == 'pretty'
+                 JSON.pretty_generate( data.to_hash )
+               else
+                 data.to_hash.to_json
+               end
         [
          is_healthy ? 200 : 503, 
          { 'Content-Type' => 'application/json',
