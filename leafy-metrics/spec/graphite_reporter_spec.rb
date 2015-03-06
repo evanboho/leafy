@@ -19,7 +19,7 @@ describe Leafy::Metrics::GraphiteReporter do
           reporter = subject.for_registry( metrics ).build( graphite )
           requests.mark
           reporter.start( 10, Leafy::Metrics::Reporter::MILLISECONDS )
-          sleep 0.01
+          sleep 0.02
           reporter.stop
           result = File.read( logfile )[ (log.size)..-1 ]
           expect( result ).to match /metrics-graphite-reporter-.-thread-1] WARN com.codahale.metrics.graphite.GraphiteReporter/
@@ -39,7 +39,7 @@ describe Leafy::Metrics::GraphiteReporter do
       
           requests.mark
           reporter.start( 10, Leafy::Metrics::Reporter::MILLISECONDS )
-          sleep 0.01
+          sleep 0.02
           reporter.stop 
           result = File.read( logfile )[ (log.size)..-1 ]
           expect( result ).to match /metrics-graphite-reporter-.-thread-1] WARN com.codahale.metrics.graphite.GraphiteReporter/

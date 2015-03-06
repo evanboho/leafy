@@ -21,7 +21,7 @@ describe Leafy::Metrics::CSVReporter do
       reporter = subject.for_registry( metrics ).build( tmpdir )
       requests.mark
       reporter.start( 10, Leafy::Metrics::Reporter::MILLISECONDS )
-      sleep 0.01
+      sleep 0.02
       reporter.stop
       result = File.read( csvfile )
       expect( result ).to match /t,count,mean_rate,m1_rate,m5_rate,m15_rate,rate_unit/
@@ -41,7 +41,7 @@ describe Leafy::Metrics::CSVReporter do
 
       requests.mark
       reporter.start( 10, Leafy::Metrics::Reporter::MILLISECONDS )
-      sleep 0.01
+      sleep 0.02
       reporter.stop 
       result = File.read( csvfile )
       expect( result ).to match /t,count,mean_rate,m1_rate,m5_rate,m15_rate,rate_unit/

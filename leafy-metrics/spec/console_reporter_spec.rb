@@ -16,7 +16,7 @@ describe Leafy::Metrics::ConsoleReporter do
       reporter = subject.for_registry( metrics ).build
       requests.mark
       reporter.start( 10, Leafy::Metrics::Reporter::MILLISECONDS )
-      sleep 0.01
+      sleep 0.02
       reporter.stop
       result = bytes.string.gsub( /\n/m, '')
       expect( result ).to match /count = 1/
@@ -38,7 +38,7 @@ describe Leafy::Metrics::ConsoleReporter do
 
       requests.mark
       reporter.start( 10, Leafy::Metrics::Reporter::MILLISECONDS )
-      sleep 0.01
+      sleep 0.02
       reporter.stop 
       result = bytes.string.gsub( /\n/m, '')
       expect( result ).to match /count = 1/
