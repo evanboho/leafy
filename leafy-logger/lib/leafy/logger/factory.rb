@@ -1,9 +1,23 @@
 require 'leafy/logger'
 require 'leafy/logger/appender_factories'
+require 'yaml'
+require 'stringio'
 
 module Leafy
   module Logger
     class Factory
+
+      class HashSourceProvider
+        include Java::IoDropwizardConfiguration::ConfigurationSourceProvider
+
+        def initialize( config )
+          @config = config
+        end
+
+        def open(path)
+          StringIO.new( @config.to_yaml ).to_inputstream
+        end
+      end
 
       def self.get_logger( name )
         org.slf4j.LoggerFactory.get_logger name
@@ -13,8 +27,23 @@ module Leafy
         Java::IoDropwizardLogging::LoggingFactory.bootstrap
       end
 
-      def initialize
-        @factory = Java::IoDropwizardLogging::LoggingFactory.new
+      def self.configurator
+        objectMapper = Java::IoDropwizardJackson::Jackson.newObjectMapper
+        validator = javax.validation.Validation.buildDefaultValidatorFactory.validator
+        Java::IoDropwizardConfiguration::ConfigurationFactory.new( Java::IoDropwizardLogging::LoggingFactory.java_class, validator, objectMapper, "" )
+      end
+
+      def self.new_from( hash )
+        new( configurator.build( HashSourceProvider.new( hash ), 'dummy') )
+      end
+
+      def self.new_from_yaml( yamlfile )
+        raise "no such file #{yamlfile}" unless File.exists?( yamlfile )
+        new( configurator.build( java.io.File.new( yamlfile ) ) )
+      end
+
+      def initialize( factory = nil )
+        @factory = factory || Java::IoDropwizardLogging::LoggingFactory.new
       end
 
       def level args = nil
