@@ -91,6 +91,12 @@ module Leafy
       def remove( name )
         @metrics.remove( name )
       end
+
+      def reporter_builder( clazz, &block )
+        r = clazz.for_registry( @metrics )
+        r.instance_eval( &block ) if block
+        r
+      end
     end
   end
 end

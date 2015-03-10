@@ -28,7 +28,10 @@ module Leafy
 
       class Builder
         def initialize( reporter_class, metrics )
-          @builder = reporter_class.for_registry( metrics.metrics )
+          # stay backward compatible
+          # FIXME remove for first proper release
+          metrics = metrics.metrics if metrics.is_a?( Leafy::Metrics::Registry )
+          @builder = reporter_class.for_registry( metrics )
           self
         end
         

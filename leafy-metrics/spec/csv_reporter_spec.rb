@@ -18,7 +18,7 @@ describe Leafy::Metrics::CSVReporter do
   
   it 'run reporter with defaults' do
     begin
-      reporter = subject.for_registry( metrics ).build( tmpdir )
+      reporter = metrics.reporter_builder( subject ).build( tmpdir )
       requests.mark
       reporter.start( 10, Leafy::Metrics::Reporter::MILLISECONDS )
       sleep 0.02
@@ -32,9 +32,9 @@ describe Leafy::Metrics::CSVReporter do
     end
   end
 
-  it 'run reporter' do
+  it 'run reporter via builder config' do
     begin
-      reporter = subject.for_registry( metrics )
+      reporter = metrics.reporter_builder( subject )
         .convert_rates_to( Leafy::Metrics::Reporter::MILLISECONDS )
         .convert_durations_to( Leafy::Metrics::Reporter::MILLISECONDS )
         .build( tmpdir )
@@ -42,7 +42,27 @@ describe Leafy::Metrics::CSVReporter do
       requests.mark
       reporter.start( 10, Leafy::Metrics::Reporter::MILLISECONDS )
       sleep 0.02
-      reporter.stop 
+      reporter.stop
+      result = File.read( csvfile )
+      expect( result ).to match /t,count,mean_rate,m1_rate,m5_rate,m15_rate,rate_unit/
+      expect( result ).to match /second/
+    ensure
+      FileUtils.rm_rf( tmpdir )
+      reporter.stop if reporter
+    end
+  end
+
+  it 'run reporter via block config' do
+    begin
+      reporter = metrics.reporter_builder( subject ) do
+        convert_rates_to( Leafy::Metrics::Reporter::MILLISECONDS )
+        convert_durations_to( Leafy::Metrics::Reporter::MILLISECONDS )
+      end.build( tmpdir )
+
+      requests.mark
+      reporter.start( 10, Leafy::Metrics::Reporter::MILLISECONDS )
+      sleep 0.02
+      reporter.stop
       result = File.read( csvfile )
       expect( result ).to match /t,count,mean_rate,m1_rate,m5_rate,m15_rate,rate_unit/
       expect( result ).to match /second/

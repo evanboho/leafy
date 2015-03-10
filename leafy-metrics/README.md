@@ -111,25 +111,33 @@ in all examples below ```metrics = Leafy::Metrics::Registry.new```
 ### console reporter
 
     require 'leafy/metrics/console_reporter'
-    reporter = Leafy::Metrics::ConsoleReporter.for_registry( metrics ).build
+    reporter = metrics.reporter_builder( Leafy::Metrics::ConsoleReporter ).build
 	reporter.start( 1, Leafy::Metrics::Reporter::SECONDS )
 	....
 	reporter.stop
 
 or with all the possible configuration
 
-	reporter = Leafy::Metrics::ConsoleReporter.for_registry( metrics )
+	reporter =  metrics.reporter_builder( Leafy::Metrics::ConsoleReporter )
 	    .convert_rates_to( Leafy::Metrics::Reporter::MILLISECONDS )
         .convert_durations_to( Leafy::Metrics::Reporter::MILLISECONDS )
         .output_to( STDERR )
         .build
+
+or the config via a block
+
+	reporter =  metrics.reporter_builder( Leafy::Metrics::ConsoleReporter ) do
+	  convert_rates_to( Leafy::Metrics::Reporter::MILLISECONDS )
+      convert_durations_to( Leafy::Metrics::Reporter::MILLISECONDS )
+      output_to( STDERR )
+	end.build
 
 ### csv reporter
 
 for each metric there will be a CSV file inside a given directory
 
     require 'leafy/metrics/csv_reporter'
-    reporter = Leafy::Metrics::CSVReporter.for_registry( metrics )
+    reporter = metrics.reporter_builder( Leafy::Metrics::CSVReporter )
 	    .build( 'metrics/directory' )
 	reporter.start( 1, Leafy::Metrics::Reporter::SECONDS )
 	....
@@ -137,10 +145,17 @@ for each metric there will be a CSV file inside a given directory
 
 or with all possible configuration
 
-	reporter = Leafy::Metrics::CSVReporter.for_registry( metrics )
+	reporter = metrics.reporter_builder( Leafy::Metrics::CSVReporter )
 	    .convert_rates_to( Leafy::Metrics::Reporter::MILLISECONDS )
         .convert_durations_to( Leafy::Metrics::Reporter::MILLISECONDS )
         .build( 'metrics/directory' )
+
+or configuration via block
+
+	reporter = metrics.reporter_builder( Leafy::Metrics::CSVReporter ) do
+	  convert_rates_to( Leafy::Metrics::Reporter::MILLISECONDS )
+      convert_durations_to( Leafy::Metrics::Reporter::MILLISECONDS )
+    end.build( 'metrics/directory' )
 
 ### graphite reporter
 
@@ -153,19 +168,42 @@ there are three targets where to send the data
 the latter is collecting a few report event and sends them as batch. the ```sender``` is one of the above targets.
 
     require 'leafy/metrics/graphite_reporter'
-    reporter = Leafy::Metrics::GraphiteReporter.for_registry( metrics )
-	    .build( sender )
+    reporter = metrics.reporter_builder( Leafy::Metrics::GraphiteReporter )
+	    .build_tcp( hostname, port )
 	reporter.start( 1, Leafy::Metrics::Reporter::SECONDS )
 	....
 	reporter.stop
 
 or with full configuration
 
-	reporter = Leafy::Metrics::GraphiteReporter.for_registry( metrics )
+	reporter = metrics.reporter_builder( Leafy::Metrics::GraphiteReporter )
 	    .convert_rates_to( Leafy::Metrics::Reporter::MILLISECONDS )
         .convert_durations_to( Leafy::Metrics::Reporter::MILLISECONDS )
 		.prefixed_with( 'myapp' )
         .build( sender )
+
+or with block configuration
+
+	reporter = metrics.reporter_builder( Leafy::Metrics::GraphiteReporter ) do
+	  convert_rates_to( Leafy::Metrics::Reporter::MILLISECONDS )
+      convert_durations_to( Leafy::Metrics::Reporter::MILLISECONDS )
+	  prefixed_with( 'myapp' )
+    end.build_udp( host, port )
+
+### any third party reporter
+
+	reporter = metrics.reporter_builder( com.readytalk.metrics.StatsDReporter ) do
+	  convert_rates_to( Leafy::Metrics::Reporter::MILLISECONDS )
+      convert_durations_to( Leafy::Metrics::Reporter::MILLISECONDS )
+    end.build( host, port )
+
+or using the Java module reference
+
+	reporter = metrics.reporter_builder( Java::ComReadytalkMetrics::StatsDReporter ) do
+	  convert_rates_to( Leafy::Metrics::Reporter::MILLISECONDS )
+      convert_durations_to( Leafy::Metrics::Reporter::MILLISECONDS )
+      prefixed_with( 'app' )
+    end.build( host, port )
 
 ## developement
 
