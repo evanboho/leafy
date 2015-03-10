@@ -12,6 +12,7 @@ end
 
 module Leafy
   module Health
+    ThreadDeadlockHealthCheck = com.codahale.metrics.health.jvm.ThreadDeadlockHealthCheck
     class HealthCheck < com.codahale.metrics.health.HealthCheck
 
       def initialize( &block )

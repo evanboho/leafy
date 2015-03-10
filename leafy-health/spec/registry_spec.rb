@@ -5,6 +5,12 @@ describe Leafy::Health::Registry do
 
   subject { Leafy::Health::Registry.new }
 
+  it 'has thread-deadlock-health-check' do
+    subject.register( 'app', Leafy::Health::ThreadDeadlockHealthCheck.new )
+
+    expect(subject.names).to eq ['app']
+  end
+
   it 'registers and unregister check as block' do
     subject.register('me') do
       'error'

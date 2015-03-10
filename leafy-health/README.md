@@ -97,6 +97,10 @@ or as health-check object
 
     registry.unregister( 'app.class' )
 
+### builtin ThreadDeadlockHeathCheck
+
+    registry.register( 'app.deadlock', Leafy::Health::ThreadDeadlockHeathCheck.new )
+
 ### note
 
 currently there is not further introspection on the registry and its health-check. with the ```Leafy::Json::HealthWriter``` (from leafy-rack) you can get a json representation of the current **health report**

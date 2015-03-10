@@ -20,7 +20,7 @@ module Leafy
       # @yieldreturn [NilClass] if the healthcheck succeeds
       # @yieldreturn [com.codahale.metrics.health.HealthCheck::Result] if the check produces its own result object
       def register(name, check = nil, &block )
-        if check and not block_given? and check.is_a? HealthCheck
+        if check and not block_given? and check.is_a? com.codahale.metrics.health.HealthCheck
           @health.register( name, check )
         elsif check.nil? and block_given?
           @health.register( name, HealthCheck.new( &block ) )
