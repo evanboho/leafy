@@ -1,0 +1,9 @@
+#-*- mode: ruby -*-
+
+source 'https://rubygems.org'
+
+gemspec
+
+gem 'leafy-metrics', :path => '../leafy-metrics'
+
+# vim: syntax=Ruby

@@ -1,0 +1,16 @@
+level: ERROR
+loggers:
+  com.example.app: DEBUG
+appenders:
+  - type: console
+    threshold: DEBUG
+    target: STDERR
+  - type: file
+    threshold: INFO
+    currentLogFilename: ./logs/example.log
+    archivedLogFilenamePattern: ./logs/example-%d.log.gz
+    archivedFileCount: 12
+  - type: syslog
+    host: myhost
+    port: 123
+    facility: KERN

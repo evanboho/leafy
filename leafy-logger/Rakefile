@@ -1,0 +1,14 @@
+#-*- mode: ruby -*-
+
+require "rspec/core/rake_task"
+RSpec::Core::RakeTask.new
+
+require "yard"
+YARD::Rake::YardocTask.new do |t|
+  t.files   = ['lib/**/*.rb']
+  t.options += ["--title", "Leafy Rack Middleware"]
+end
+
+task :default => [ :spec ]
+
+# vim: syntax=Ruby
