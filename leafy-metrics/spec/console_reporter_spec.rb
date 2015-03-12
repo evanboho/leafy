@@ -13,7 +13,7 @@ describe Leafy::Metrics::ConsoleReporter do
     bytes = StringIO.new
     java.lang.System.out = java.io.PrintStream.new( bytes.to_outputstream )
     begin
-      reporter = subject.for_registry( metrics ).build
+      reporter = metrics.reporter_builder( subject ).build
       requests.mark
       reporter.start( 10, Leafy::Metrics::Reporter::MILLISECONDS )
       sleep 0.02
@@ -27,10 +27,10 @@ describe Leafy::Metrics::ConsoleReporter do
     end
   end
 
-  it 'run reporter' do
+  it 'run reporter via builder config' do
     bytes = StringIO.new
     begin
-      reporter = subject.for_registry( metrics )
+      reporter = metrics.reporter_builder( subject )
         .convert_rates_to( Leafy::Metrics::Reporter::MILLISECONDS )
         .convert_durations_to( Leafy::Metrics::Reporter::MILLISECONDS )
         .output_to( bytes )
@@ -39,7 +39,28 @@ describe Leafy::Metrics::ConsoleReporter do
       requests.mark
       reporter.start( 10, Leafy::Metrics::Reporter::MILLISECONDS )
       sleep 0.02
-      reporter.stop 
+      reporter.stop
+      result = bytes.string.gsub( /\n/m, '')
+      expect( result ).to match /count = 1/
+      expect( result ).to match /millisecond/
+    ensure
+      reporter.stop if reporter
+    end
+  end
+
+  it 'run reporter via block config' do
+    bytes = StringIO.new
+    begin
+      reporter = metrics.reporter_builder( subject ) do
+        convert_rates_to( Leafy::Metrics::Reporter::MILLISECONDS )
+        convert_durations_to( Leafy::Metrics::Reporter::MILLISECONDS )
+        output_to( bytes )
+      end.build
+
+      requests.mark
+      reporter.start( 10, Leafy::Metrics::Reporter::MILLISECONDS )
+      sleep 0.02
+      reporter.stop
       result = bytes.string.gsub( /\n/m, '')
       expect( result ).to match /count = 1/
       expect( result ).to match /millisecond/

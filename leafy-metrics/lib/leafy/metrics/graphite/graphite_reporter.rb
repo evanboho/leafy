@@ -20,6 +20,18 @@ module Leafy
         def build( graphite )
           Reporter.new( @builder.build( graphite.sender ) )
         end
+
+        def build_tcp( host, port )
+          build( Leafy::Metrics::Graphite.new_tcp( host, port ) )
+        end
+
+        def build_udp( host, port )
+          build( Leafy::Metrics::Graphite.new_udp( host, port ) )
+        end
+
+        def build_pickled( host, port )
+          build( Leafy::Metrics::Graphite.new_pickled( host, port ) )
+        end
       end
 
       def self.for_registry( metrics )

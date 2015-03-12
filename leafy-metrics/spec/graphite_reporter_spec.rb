@@ -16,33 +16,53 @@ describe Leafy::Metrics::GraphiteReporter do
       it 'run reporter with defaults' do
         log = File.read( logfile )
         begin
-          reporter = subject.for_registry( metrics ).build( graphite )
+          reporter = metrics.reporter_builder( subject ).build( graphite )
           requests.mark
           reporter.start( 10, Leafy::Metrics::Reporter::MILLISECONDS )
           sleep 0.02
           reporter.stop
           result = File.read( logfile )[ (log.size)..-1 ]
-          expect( result ).to match /metrics-graphite-reporter-.-thread-1] WARN com.codahale.metrics.graphite.GraphiteReporter/
+          expect( result ).to match /metrics-graphite-reporter-.+-thread-1] WARN com.codahale.metrics.graphite.GraphiteReporter/
         ensure
           reporter.stop if reporter
         end
       end
 
-      it 'run reporter' do
+      it 'run reporter via builder config' do
         log = File.read( logfile )
         begin
-          reporter = subject.for_registry( metrics )
+          reporter = metrics.reporter_builder( subject )
             .convert_rates_to( Leafy::Metrics::Reporter::MILLISECONDS )
             .convert_durations_to( Leafy::Metrics::Reporter::MILLISECONDS )
             .prefixed_with( 'myapp' )
             .build( graphite )
-      
+
           requests.mark
           reporter.start( 10, Leafy::Metrics::Reporter::MILLISECONDS )
           sleep 0.02
-          reporter.stop 
+          reporter.stop
           result = File.read( logfile )[ (log.size)..-1 ]
-          expect( result ).to match /metrics-graphite-reporter-.-thread-1] WARN com.codahale.metrics.graphite.GraphiteReporter/
+          expect( result ).to match /metrics-graphite-reporter-.+-thread-1] WARN com.codahale.metrics.graphite.GraphiteReporter/
+        ensure
+          reporter.stop if reporter
+        end
+      end
+
+      it 'run reporter via block config' do
+        log = File.read( logfile )
+        begin
+          reporter = metrics.reporter_builder( subject ) do
+            convert_rates_to( Leafy::Metrics::Reporter::MILLISECONDS )
+            convert_durations_to( Leafy::Metrics::Reporter::MILLISECONDS )
+            prefixed_with( 'myapp' )
+          end.build( graphite )
+
+          requests.mark
+          reporter.start( 10, Leafy::Metrics::Reporter::MILLISECONDS )
+          sleep 0.02
+          reporter.stop
+          result = File.read( logfile )[ (log.size)..-1 ]
+          expect( result ).to match /metrics-graphite-reporter-.+-thread-1] WARN com.codahale.metrics.graphite.GraphiteReporter/
         ensure
           reporter.stop if reporter
         end
