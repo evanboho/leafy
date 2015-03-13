@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.summary = %q(provides an API to register healthchecks)
   s.homepage = 'https://github.com/lookout/leafy'
   s.description = %q(provides an API to register healthchecks which uses dropwizrd-metrics-healthchecks)
-  
+
   s.files = `git ls-files`.split($/)
 
   s.requirements << 'jar io.dropwizard.metrics:metrics-healthchecks, 3.1.0'
