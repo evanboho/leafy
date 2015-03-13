@@ -13,9 +13,10 @@ Gem::Specification.new do |s|
 
   s.files = ['leafy-complete.gemspec', 'README.md', 'LICENSE']
 
-  s.add_runtime_dependency 'leafy-metrics', '~> 0.1.0'
-  s.add_runtime_dependency 'leafy-health', '~> 0.1.0'
-  s.add_runtime_dependency 'leafy-rack', '~> 0.1.0'
+  s.add_runtime_dependency 'leafy-metrics', '~> 0.2.0'
+  s.add_runtime_dependency 'leafy-health', '~> 0.2.0'
+  s.add_runtime_dependency 'leafy-rack', '~> 0.2.0'
+  s.add_runtime_dependency 'leafy-logger', '~> 0.2.0'
 end
 
 # vim: syntax=Ruby
