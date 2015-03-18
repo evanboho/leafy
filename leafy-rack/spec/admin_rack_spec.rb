@@ -36,7 +36,7 @@ describe Leafy::Rack::Admin do
     expect( status ).to eq 200
     expect( headers.to_yaml).to eq expected_headers.to_yaml
     expect( body.join.count("\n" ) ).to eq 15
-    expect( body.join.gsub( '/path/' ).collect { |f| f }.size ).to eq 6
+    expect( body.join.gsub( 'path/' ).collect { |f| f }.size ).to eq 6
   end
 
   describe 'default path' do

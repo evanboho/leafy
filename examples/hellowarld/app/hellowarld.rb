@@ -16,6 +16,10 @@ configure do
   health = Leafy::Health::Registry.new
 
   use Leafy::Rack::Admin, metrics, health
+  use Leafy::Rack::Metrics, metrics
+  use Leafy::Rack::Health, health
+  use Leafy::Rack::Ping
+  use Leafy::Rack::ThreadDump
   use Leafy::Rack::Instrumented, Leafy::Instrumented::Instrumented.new( metrics, 'webapp' )
 
   metrics.register_gauge('app.data_length' ) do
