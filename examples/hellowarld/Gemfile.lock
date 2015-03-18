@@ -1,19 +1,19 @@
 PATH
   remote: ../../leafy-health
   specs:
-    leafy-health (0.2.0)
+    leafy-health (0.2.1)
       jar-dependencies (~> 0.1.8)
 
 PATH
   remote: ../../leafy-metrics
   specs:
-    leafy-metrics (0.2.0)
+    leafy-metrics (0.2.1)
       jar-dependencies (~> 0.1.8)
 
 PATH
   remote: ../../leafy-rack
   specs:
-    leafy-rack (0.2.0)
+    leafy-rack (0.2.1)
       jar-dependencies (~> 0.1.8)
       leafy-health (~> 0.2.0)
       leafy-metrics (~> 0.2.0)
