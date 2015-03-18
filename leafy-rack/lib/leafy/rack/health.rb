@@ -12,7 +12,10 @@ module Leafy
         json = if env[ 'QUERY_STRING' ] == 'pretty'
                  JSON.pretty_generate( data.to_hash )
                else
-                 data.to_hash.to_json
+                 # to use data.to_hash.to_json did produce
+                 # a different json structure on some
+                 # rack setup
+                 JSON.generate( data.to_hash )
                end
         [
          is_healthy ? 200 : 503, 
