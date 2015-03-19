@@ -2,10 +2,12 @@ require 'leafy/logger'
 require 'leafy/logger/appender_factories'
 require 'yaml'
 require 'stringio'
+require 'jruby/synchronized'
 
 module Leafy
   module Logger
     class Factory
+      include JRuby::Synchronized
 
       class HashSourceProvider
         include Java::IoDropwizardConfiguration::ConfigurationSourceProvider
@@ -33,8 +35,8 @@ module Leafy
         Java::IoDropwizardConfiguration::ConfigurationFactory.new( Java::IoDropwizardLogging::LoggingFactory.java_class, validator, objectMapper, "" )
       end
 
-      def self.new_from( hash )
-        new( configurator.build( HashSourceProvider.new( hash ), 'dummy') )
+      def self.new_from_options( options )
+        new( configurator.build( HashSourceProvider.new( options ), 'dummy') )
       end
 
       def self.new_from_yaml( yamlfile )
@@ -46,6 +48,22 @@ module Leafy
         @factory = factory || Java::IoDropwizardLogging::LoggingFactory.new
       end
 
+      def reconfigure_from_options( options )
+        do_reconfigure( self.class.configurator.build( HashSourceProvider.new( options ), 'dummy') )
+      end
+
+      def reconfigure_from_yaml( yamlfile )
+        raise "no such file #{yamlfile}" unless File.exists?( yamlfile )
+        do_reconfigure( self.class.configurator.build( java.io.File.new( yamlfile ) ) )
+      end
+
+      def do_reconfigure( factory )
+        @factory.stop
+        @factory = factory
+        reconfigure
+      end
+      private :do_reconfigure
+
       def level args = nil
         if args
           self.level = args
@@ -53,6 +71,12 @@ module Leafy
           @factory.level.to_s
         end
       end
+
+      def level_set level
+        l = level.to_s.upcase
+        @factory.level = Java::ChQosLogbackClassic::Level.const_get( l )
+      end
+      private :level_set
 
       def level= level
         l = level.to_s.upcase
@@ -87,10 +111,15 @@ module Leafy
         self.loggers = m
       end
 
-      def loggers= map
+      def loggers_set map
         m = {}
         map.each { |k,v| m[k] = Java::ChQosLogbackClassic::Level.const_get( v.to_s.upcase ) }
         @factory.loggers = m
+      end
+      private :loggers_set
+
+      def loggers= map
+        loggers_set( map )
         reconfigure
       end
 
