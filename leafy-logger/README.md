@@ -104,6 +104,58 @@ appender = Leafy::Logger::SyslogAppenderFactory.new do
 end
 ```
 
+# using configurations
+
+a yaml file or an options hash can be used to configure the logger factory. once you have a logger factory you can reconfigure it with a yaml-file or options hash at runtime.
+
+## build logger factory from yaml file
+
+having a yaml file like (config/logging.yaml)
+
+```
+level: ERROR
+loggers:
+  com.example.app: DEBUG
+  com.example.db: INFO
+appenders:
+  - type: console
+    threshold: DEBUG
+    target: STDERR
+  - type: file
+    threshold: INFO
+    currentLogFilename: ./logs/example.log
+    archivedLogFilenamePattern: ./logs/example-%d.log.gz
+    archivedFileCount: 12
+  - type: syslog
+    host: 127.0.0.1
+    port: 123
+    facility: KERN
+```
+can be used to build ```LoggerFactory``` directly from this yaml file:
+
+```
+factory = Leafy::Logger::Factory.new_from_yaml( 'config/logging.yaml' )
+```
+
+having the same config as ```Hash``` can be used as well
+
+```
+options = YAML.load( File.read( 'config/logging.yaml' ) )
+factory = Leafy::Logger::Factory.new_from_options( options )
+```
+
+## reconfigure logger factory at runtime
+
+```
+factory.reconfigure_from_yaml( 'config/logging.yaml' )
+```
+
+or
+
+```
+factory.reconfigure_from_options( options )
+```
+
 ## developement
 
 get all the gems and jars in place
