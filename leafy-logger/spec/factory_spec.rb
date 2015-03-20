@@ -17,6 +17,19 @@ describe Leafy::Logger::Factory do
   let( :logger1 ) { Leafy::Logger::Factory.get_logger 'my.app' }
   let( :logger2 ) { Leafy::Logger::Factory.get_logger 'my.db' }
 
+  let( :factory_yaml ) { Leafy::Logger::Factory.new_from_yaml( yaml ) }
+  let( :reconfigured_yaml ) do
+    subject.reconfigure_from_yaml( yaml )
+    subject
+  end
+
+  let( :options ) { YAML.load( File.read( yaml ) ) }
+  let( :factory_options ) { Leafy::Logger::Factory.new_from_options( options ) }
+  let( :reconfigured_options ) do
+    subject.reconfigure_from_options( options )
+    subject
+  end
+
   before { FileUtils.rm_f log }
   after { FileUtils.rm_f log }
 
@@ -115,41 +128,49 @@ describe Leafy::Logger::Factory do
     expect {Leafy::Logger::Factory.new_from_yaml( yaml + '.gone' ) }.to raise_error( Exception )
   end
 
-  it 'can use a yaml configuration' do
-    f = Leafy::Logger::Factory.new_from_yaml( yaml )
-    expect( f.level ).to eq 'ERROR'
-    expect( f.loggers ).to eq 'com.example.app' => 'DEBUG'
-    expect( f.appenders.size ).to eq 3
-    # console
-    expect( f.appenders[0].threshold ).to eq 'DEBUG'
-    expect( f.appenders[0].target ).to eq 'STDERR'
-    # file
-    expect( f.appenders[1].threshold ).to eq 'INFO'
-    expect( f.appenders[1].current_log_filename ).to eq './logs/example.log'
-    expect( f.appenders[1].archived_log_filename_pattern ).to eq './logs/example-%d.log.gz'
-    expect( f.appenders[1].archived_file_count ).to eq 12
-    # syslog
-    expect( f.appenders[2].host ).to eq 'myhost'
-    expect( f.appenders[2].port ).to eq 123
-    expect( f.appenders[2].facility ).to eq 'KERN'
+  it 'fails reconfigure on missing yaml configuration' do
+    expect {subject.reconfigure_from_yaml( yaml + '.gone' ) }.to raise_error( Exception )
   end
 
-  it 'can use a hash configuration' do
-    f = Leafy::Logger::Factory.new_from( YAML.load( File.read( yaml ) ) )
-    expect( f.level ).to eq 'ERROR'
-    expect( f.loggers ).to eq 'com.example.app' => 'DEBUG'
-    expect( f.appenders.size ).to eq 3
-    # console
-    expect( f.appenders[0].threshold ).to eq 'DEBUG'
-    expect( f.appenders[0].target ).to eq 'STDERR'
-    # file
-    expect( f.appenders[1].threshold ).to eq 'INFO'
-    expect( f.appenders[1].current_log_filename ).to eq './logs/example.log'
-    expect( f.appenders[1].archived_log_filename_pattern ).to eq './logs/example-%d.log.gz'
-    expect( f.appenders[1].archived_file_count ).to eq 12
-    # syslog
-    expect( f.appenders[2].host ).to eq 'myhost'
-    expect( f.appenders[2].port ).to eq 123
-    expect( f.appenders[2].facility ).to eq 'KERN'
+  [ :factory_yaml, :reconfigured_yaml ].each do |method|
+    it "can use a yaml configuration - #{method}" do
+      f = send( method )
+      expect( f.level ).to eq 'ERROR'
+      expect( f.loggers ).to eq 'com.example.app' => 'DEBUG'
+      expect( f.appenders.size ).to eq 3
+      # console
+      expect( f.appenders[0].threshold ).to eq 'DEBUG'
+      expect( f.appenders[0].target ).to eq 'STDERR'
+      # file
+      expect( f.appenders[1].threshold ).to eq 'INFO'
+      expect( f.appenders[1].current_log_filename ).to eq './logs/example.log'
+      expect( f.appenders[1].archived_log_filename_pattern ).to eq './logs/example-%d.log.gz'
+      expect( f.appenders[1].archived_file_count ).to eq 12
+      # syslog
+      expect( f.appenders[2].host ).to eq '127.0.0.1'
+      expect( f.appenders[2].port ).to eq 123
+      expect( f.appenders[2].facility ).to eq 'KERN'
+    end
+  end
+
+  [ :factory_options, :reconfigured_options ].each do |method|
+    it 'can use a hash configuration' do
+      f = send( method )
+      expect( f.level ).to eq 'ERROR'
+      expect( f.loggers ).to eq 'com.example.app' => 'DEBUG'
+      expect( f.appenders.size ).to eq 3
+      # console
+      expect( f.appenders[0].threshold ).to eq 'DEBUG'
+      expect( f.appenders[0].target ).to eq 'STDERR'
+      # file
+      expect( f.appenders[1].threshold ).to eq 'INFO'
+      expect( f.appenders[1].current_log_filename ).to eq './logs/example.log'
+      expect( f.appenders[1].archived_log_filename_pattern ).to eq './logs/example-%d.log.gz'
+      expect( f.appenders[1].archived_file_count ).to eq 12
+      # syslog
+      expect( f.appenders[2].host ).to eq '127.0.0.1'
+      expect( f.appenders[2].port ).to eq 123
+      expect( f.appenders[2].facility ).to eq 'KERN'
+    end
   end
 end

@@ -11,6 +11,6 @@ appenders:
     archivedLogFilenamePattern: ./logs/example-%d.log.gz
     archivedFileCount: 12
   - type: syslog
-    host: myhost
+    host: 127.0.0.1
     port: 123
     facility: KERN
