@@ -78,12 +78,16 @@ plugin( :war, '2.2',
 require 'open-uri'
 results = []
 execute 'download', :phase => 'integration-test' do
-  results << open( 'http://localhost:8080/app' ).string
-  results << open( 'http://localhost:8080/admin' ).string
-  results << open( 'http://localhost:8080/admin/ping' ).string
-  results << open( 'http://localhost:8080/admin/health' ).string
-  results << open( 'http://localhost:8080/admin/metrics' ).string
-  results << open( 'http://localhost:8080/admin/threads' ).read
+  results << open( 'http://localhost:8080/hellowarld/app' ).string
+  results << open( 'http://localhost:8080/hellowarld/admin' ).string
+  results << open( 'http://localhost:8080/hellowarld/admin/ping' ).string
+  results << open( 'http://localhost:8080/hellowarld/admin/health' ).string
+  results << open( 'http://localhost:8080/hellowarld/admin/metrics' ).string
+  results << open( 'http://localhost:8080/hellowarld/admin/threads' ).read
+  results << open( 'http://localhost:8080/hellowarld/ping' ).string
+  results << open( 'http://localhost:8080/hellowarld/health' ).string
+  results << open( 'http://localhost:8080/hellowarld/metrics' ).string
+  results << open( 'http://localhost:8080/hellowarld/threads' ).read
   results.each { |r| puts r[0..20] }
 end
 
@@ -115,6 +119,22 @@ execute 'verify downloads', :phase => :verify do
     puts result[5]
     raise "expected thread dump to be big"
   end
+  expected = 'pong'
+  unless results[6].match( /#{expected}/ )
+    raise "missed expected string in download: #{expected}"
+  end
+  json = JSON.parse( results[7] )
+  unless json["app.health"]["healthy"]
+    raise "healthy expected"
+  end
+  json = JSON.parse( results[8] )
+  unless json["meters"]["webapp.responseCodes.ok"]["count"] == 1
+    raise "one OK request expected"
+  end
+  unless results[9].length > 10000
+    puts result[9]
+    raise "expected thread dump to be big"
+  end
 end
 
 # jetty runner 
@@ -124,7 +144,7 @@ end
 #        :webAppSourceDirectory => "${basedir}" )
 plugin( 'org.eclipse.jetty:jetty-maven-plugin', '9.3.0.M1',
         :webAppSourceDirectory => "${basedir}",
-        :path => '/',
+        :webApp => { :contextPath => '/hellowarld' },
         :stopPort => 9999,
         :stopKey => 'foo' ) do
    execute_goal( 'start', :id => 'start jetty', :phase => 'pre-integration-test', :daemon => true )

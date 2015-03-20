@@ -8,6 +8,7 @@ module Leafy
     class Admin
       
       def self.response( path )
+        path = path.sub( /^\//, '' )
         [  
          200, 
          { 'Content-Type' => 'text/html' }, 
