@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.requirements << 'jar io.dropwizard:dropwizard-configuration, 0.8.0-rc5, [ org.yaml:snakeyaml ]'
 
   s.add_runtime_dependency 'jar-dependencies', '~> 0.1.8'
-  s.add_runtime_dependency 'leafy-metrics', '~> 0.2.0'
+  s.add_runtime_dependency 'leafy-metrics', "~> #{Leafy::Rack::VERSION}"
   s.add_development_dependency 'rspec', '~> 3.1.0'
   s.add_development_dependency 'yard', '~> 0.8.7'
   s.add_development_dependency 'rake', '~> 10.2'
