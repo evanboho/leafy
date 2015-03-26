@@ -50,7 +50,7 @@ describe Leafy::Metrics::Registry do
     obj = subject.register_gauge('me') do
       123
     end
-    expect(obj).to be_a(Leafy::Metrics::Registry::Gauge)
+    expect(obj).to be_a(Leafy::Metrics::Gauge)
     expect(subject.metrics.gauges['me']).to be obj
     expect(obj.value).to eq 123
 
@@ -62,7 +62,21 @@ describe Leafy::Metrics::Registry do
     obj = subject.register_gauge('me', Proc.new do
       123
     end )
-    expect(obj).to be_a(Leafy::Metrics::Registry::Gauge)
+    expect(obj).to be_a(Leafy::Metrics::Gauge)
+    expect(subject.metrics.gauges['me']).to be obj
+    expect(obj.value).to eq 123
+
+    subject.remove('me')
+    expect(subject.metrics.gauges).to be_empty
+  end
+
+  it 'registers and unregister com.codahale.metrics.Gauge' do
+    g = Leafy::Metrics::Gauge.new
+    def g.value
+      123
+    end
+    obj = subject.register_gauge('me', g)
+    expect(obj).to be_a(Leafy::Metrics::Gauge)
     expect(subject.metrics.gauges['me']).to be obj
     expect(obj.value).to eq 123
 

@@ -1,6 +1,11 @@
 require 'leafy/metrics'
 module Leafy
   module Metrics
+
+    class Gauge
+      include com.codahale.metrics.Gauge
+    end
+
     class Registry
 
       class Timer
@@ -21,8 +26,7 @@ module Leafy
         end
       end
       
-      class Gauge
-        include com.codahale.metrics.Gauge
+      class GaugeWrapper < Leafy::Metrics::Gauge
         
         def initialize( block )
           @block = block
@@ -48,9 +52,11 @@ module Leafy
       # @return [MetricsRegistry::Gauge] gauge object which has a 'value' method to retrieve the current value
       def register_gauge( name, gauge = nil, &block )
         if gauge and not block_given? and gauge.respond_to? :call
-          @metrics.register( name, Gauge.new( gauge ) )      
+          @metrics.register( name, GaugeWrapper.new( gauge ) )
+        elsif gauge and not block_given? and gauge.kind_of? com.codahale.metrics.Gauge
+          @metrics.register( name, gauge )
         elsif gauge.nil? and block_given?
-          @metrics.register( name, Gauge.new( block ) )
+          @metrics.register( name, GaugeWrapper.new( block ) )
         else
           raise 'needs either a block and object with call method'
         end
