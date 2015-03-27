@@ -1,4 +1,7 @@
 # Leafy
+
+[![Build Status](https://travis-ci.org/lookout/leafy.svg?branch=master)](https://travis-ci.org/lookout/leafy)
+
 The green way to build Ruby-based web services
 
 
