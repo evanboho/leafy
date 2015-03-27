@@ -1,0 +1,22 @@
+#-*- mode: ruby -*-
+
+repository :id => 'bintray', :url => 'http://dl.bintray.com/lookout/systems'
+
+jar 'com.github.lookout:metrics-datadog:0.1.4'
+
+# dump Jars.lock
+################
+
+plugin_repository :id => 'sonatype-snapshots', :url => 'https://oss.sonatype.org/content/repositories/snapshots'
+
+repository :id => 'rubygems-releases', :url => 'http://rubygems-proxy.torquebox.org/releases'
+
+#properties 'jruby.plugins.version' => 
+jruby_plugin! :gem, '1.0.9-SNAPSHOT' do
+  
+  # duplicate dependency here and assume the local gem has the same
+  # dependencies as this one here
+  execute_goal 'jars-lock', :gems => ['leafy-metrics:0.3.0']
+end
+
+# vim: syntax=Ruby

@@ -1,0 +1,12 @@
+#-*- mode: ruby -*-
+
+source 'https://rubygems.org'
+
+gem 'leafy-metrics', :path => '../../leafy-metrics'
+
+group 'development' do
+  gem 'ruby-maven'
+  gem 'rake', '~> 10.2'
+end
+
+# vim: syntax=Ruby
