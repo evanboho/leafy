@@ -2,8 +2,8 @@
 
 Gem::Specification.new do |s|
   s.name = 'leafy-complete'
-  s.version = '0.3.0'
-  s.author = 'christian meier'
+  s.version = '0.3.1'
+  s.author = 'Christian Meier'
   s.email = [ 'christian.meier@lookout.com' ]
 
   s.license = 'MIT'
