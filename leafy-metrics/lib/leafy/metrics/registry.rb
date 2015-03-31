@@ -94,6 +94,10 @@ module Leafy
         @metrics.histogram( name )
       end
 
+      def register_metric( name, metric )
+        @metrics.register( name, metric )
+      end
+
       def remove( name )
         @metrics.remove( name )
       end
