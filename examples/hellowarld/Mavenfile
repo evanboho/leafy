@@ -9,7 +9,7 @@ jar( 'org.jruby.rack:jruby-rack', '1.1.18',
 
 gem! 'bundler', '1.7.7'
 # bug in getting all the gems in place via :path
-gem! 'jar-dependencies', '0.1.8'
+gem! 'jar-dependencies', '0.1.10'
 
 pom 'org.jruby:jruby', '${jruby.version}'
 
@@ -130,6 +130,9 @@ execute 'verify downloads', :phase => :verify do
   json = JSON.parse( results[8] )
   unless json["meters"]["webapp.responseCodes.ok"]["count"] == 1
     raise "one OK request expected"
+  end
+  unless json["meters"]["collected.responseCodes.2xx"]["count"] == 1
+    raise "one 2xx request expected"
   end
   unless results[9].length > 10000
     puts result[9]
