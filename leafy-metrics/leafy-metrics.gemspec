@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   METRICS_VERSION = '3.1.0'
   s.requirements << "jar io.dropwizard.metrics:metrics-core, #{METRICS_VERSION}"
   s.requirements << "jar io.dropwizard.metrics:metrics-graphite, #{METRICS_VERSION}"
+  s.requirements << "jar io.dropwizard.metrics:metrics-jvm, #{METRICS_VERSION}"
   s.requirements << "jar org.slf4j, slf4j-simple, 1.7.7, :scope => :test"
 
   s.add_runtime_dependency 'jar-dependencies', '~> 0.1.8'
