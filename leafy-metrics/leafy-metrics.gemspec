@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.requirements << "jar org.slf4j, slf4j-simple, 1.7.7, :scope => :test"
 
   s.add_runtime_dependency 'jar-dependencies', '~> 0.1.8'
-  s.add_development_dependency 'rspec', '~> 3.1.0'
+  s.add_development_dependency 'rspec', '~> 3.1'
   s.add_development_dependency 'yard', '~> 0.8.7'
   s.add_development_dependency 'rake', '~> 10.2'
 end
