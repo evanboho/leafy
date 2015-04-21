@@ -16,28 +16,5 @@ describe Leafy::Metrics::JRubyMetrics do
     expect( subject.metrics.gauges['test.executing.count'].value ).to eq 1
     expect( subject.metrics.gauges['test.sleeping.count'].value ).to eq 0
 
-    t = Thread.new do
-      Thread.current[:running] = true
-      while( Thread.current[:running] ) do
-        sleep 0.1
-      end
-    end
-
-    expect( subject.metrics.gauges['test.total.count'].value ).to eq 2
-    if ENV['TRAVIS']
-      expect( subject.metrics.gauges['test.executing.count'].value +
-              subject.metrics.gauges['test.sleeping.count'].value ).to eq 2
-    else
-      expect( subject.metrics.gauges['test.executing.count'].value ).to eq 1
-      expect( subject.metrics.gauges['test.sleeping.count'].value ).to eq 1
-    end
-
-    t[:running] = false
-    sleep 0.1
-    t.join if ENV['TRAVIS']
-
-    expect( subject.metrics.gauges['test.total.count'].value ).to eq 1
-    expect( subject.metrics.gauges['test.executing.count'].value ).to eq 1
-    expect( subject.metrics.gauges['test.sleeping.count'].value ).to eq 0
   end
 end
