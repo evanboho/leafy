@@ -17,3 +17,15 @@ Leafy should provide standard means of:
  * Logging
  * Health checks
  * Exposing operations-friendly interfaces
+
+## how to release all the gems
+
+adjust the version in
+
+* [leafy-complete.gemspec](https://github.com/lookout/leafy/blob/master/leafy-complete.gemspec)
+* [leafy-metrics/lib/leafy/metrics/version.rb](https://github.com/lookout/leafy/blob/master/leafy-metrics/lib/leafy/metrics/version.rb)
+* [leafy-health/lib/leafy/health/version.rb](https://github.com/lookout/leafy/blob/master/leafy-health/lib/leafy/health/version.rb)
+* [leafy-rack/lib/leafy/rack/version.rb](https://github.com/lookout/leafy/blob/master/leafy-rack/lib/leafy/rack/version.rb)
+* [leafy-logger/lib/leafy/logger/version.rb](https://github.com/lookout/leafy/blob/master/leafy-logger/lib/leafy/logger/version.rb)
+
+now build and push each gem
