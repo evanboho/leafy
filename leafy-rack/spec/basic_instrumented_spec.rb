@@ -11,19 +11,14 @@ describe Leafy::Instrumented::BasicInstrumented do
   let( :app ) do
     Proc.new() do
       sleep 0.1
-      [ 200, nil, registry.metrics.counters.values.first.count ]
+      [ 200, nil, "" ]
     end
   end
 
   it 'collects metrics for a call' do
-    _, _, count = subject.call do
+    _, _, _ = subject.call do
       app.call
     end
-    expect( count ).to eq 1
-    expect( registry.metrics.timers.keys ).to eq [ 'name.requests' ] 
-    expect( registry.metrics.timers.values.first.mean_rate ).to be > 0.9
-    expect( registry.metrics.counters.keys ).to eq [ 'name.active_requests' ] 
-    expect( registry.metrics.counters.values.collect { |a| a.count } ).to eq [ 0 ]
     expect( registry.metrics.meters.keys ).to eq [ 'name.responseCodes.other' ] 
     expect( registry.metrics.meters.values.collect { |a| a.count } ).to eq [ 1 ]
     expect( registry.metrics.meters.values.first.mean_rate ).to be > 5.0

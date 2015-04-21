@@ -4,6 +4,7 @@ require 'ostruct'
 require 'leafy/metrics'
 require 'leafy/health'
 require 'leafy/instrumented/instrumented'
+require 'leafy/instrumented/collected_instrumented'
 require 'leafy/rack/admin'
 require 'leafy/rack/instrumented'
 
@@ -15,12 +16,13 @@ configure do
   metrics = Leafy::Metrics::Registry.new
   health = Leafy::Health::Registry.new
 
-  use Leafy::Rack::Admin, metrics, health
-  use Leafy::Rack::Metrics, metrics
-  use Leafy::Rack::Health, health
-  use Leafy::Rack::Ping
-  use Leafy::Rack::ThreadDump
-  use Leafy::Rack::Instrumented, Leafy::Instrumented::Instrumented.new( metrics, 'webapp' )
+  use( Leafy::Rack::Admin, metrics, health )
+  use( Leafy::Rack::Metrics, metrics )
+  use( Leafy::Rack::Health, health )
+  use( Leafy::Rack::Ping )
+  use( Leafy::Rack::ThreadDump )
+  use( Leafy::Rack::Instrumented, Leafy::Instrumented::Instrumented.new( metrics, 'webapp' ) )
+  use( Leafy::Rack::Instrumented, Leafy::Instrumented::CollectedInstrumented.new( metrics, 'collected' ) )
 
   metrics.register_gauge('app.data_length' ) do
     data.surname.length + data.firstname.length
