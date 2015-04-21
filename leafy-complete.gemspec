@@ -6,6 +6,7 @@ Gem::Specification.new do |s|
   s.author = 'Christian Meier'
   s.email = [ 'christian.meier@lookout.com' ]
 
+  s.platform = 'java'
   s.license = 'MIT'
   s.summary = %q('meta' gem which pulls all the leafy gems)
   s.homepage = 'https://github.com/lookout/leafy'

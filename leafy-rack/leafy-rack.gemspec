@@ -8,6 +8,7 @@ Gem::Specification.new do |s|
   s.author = 'christian meier'
   s.email = [ 'christian.meier@lookout.com' ]
 
+  s.platform = 'java'
   s.license = 'MIT'
   s.summary = %q(rack middleware to expose leafy metrics/health data and more)
   s.homepage = 'https://github.com/lookout/leafy'
