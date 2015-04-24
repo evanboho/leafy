@@ -102,5 +102,22 @@ describe Leafy::Metrics::Registry do
 
       subject.remove('me')
     end
+
+    it 'can messure duration by passing in block' do
+      @obj = subject.register_timer('me')
+      expect(@obj.timer.mean_rate).to eq 0.0
+
+      def measure_me( &block )
+        @obj.time &block
+      end
+        
+      measure_me do
+        sleep 0.1
+      end
+      
+      expect(@obj.timer.mean_rate).to be > 0.0
+
+      subject.remove('me')
+    end
   end
 end
