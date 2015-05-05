@@ -21,15 +21,15 @@ describe Leafy::Json::MetricsWriter do
 
   let( :expected ) do
     {
-      "two"=> {"count"=>1,
-        "m15_rate"=>0.0,
-        "m1_rate"=>0.0,
-        "m5_rate"=>0.0,
-        "units"=>"events/second"}, 
       "one"=> {"count"=>1, 
         "m15_rate"=>0.0, 
         "m1_rate"=>0.0, 
         "m5_rate"=>0.0, 
+        "units"=>"events/second"}, 
+      "two"=> {"count"=>1,
+        "m15_rate"=>0.0,
+        "m1_rate"=>0.0,
+        "m5_rate"=>0.0,
         "units"=>"events/second"}, 
       "three"=>{"count"=>2}
     }
