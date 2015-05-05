@@ -6,9 +6,18 @@ module Leafy
   module Rack
     class Health
 
+      def self.hostinfo
+        @info ||= {}
+      end
+
       def self.response( health, env )
-        data = health.run_health_checks
-        is_healthy = data.values.all? { |r| r.healthy? }
+        checks = health.run_health_checks
+        if @info
+          data = { 'host' => @info, 'checks' => checks.to_hash }
+        else
+          data = checks
+        end
+        is_healthy = checks.values.all? { |r| r.healthy? }
         json = if env[ 'QUERY_STRING' ] == 'pretty'
                  JSON.pretty_generate( data.to_hash )
                else
