@@ -22,15 +22,11 @@ describe Leafy::Metrics::JvmMetrics do
       total = registry.metrics.gauges['test.count'].value
       
       t = Thread.new do
-        Thread.current[:running] = true
-        while( Thread.current[:running] ) do
-          sleep 0.1
-        end
+        sleep 0.1
       end
 
       expect( registry.metrics.gauges['test.count'].value ).to eq total + 1
       
-      t[:running] = false
       sleep 0.1
       t.join
 
