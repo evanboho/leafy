@@ -26,12 +26,12 @@ describe Leafy::Json::MetricsWriter do
         "m1_rate"=>0.0, 
         "m5_rate"=>0.0, 
         "units"=>"events/second"}, 
+      "three"=>{"count"=>2}, 
       "two"=> {"count"=>1,
         "m15_rate"=>0.0,
         "m1_rate"=>0.0,
         "m5_rate"=>0.0,
-        "units"=>"events/second"}, 
-      "three"=>{"count"=>2}
+        "units"=>"events/second"}
     }
   end
 
@@ -41,7 +41,7 @@ describe Leafy::Json::MetricsWriter do
     data = JSON.parse( data )
     expect( data['one'].delete('mean_rate') ).to be >0
     expect( data['two'].delete('mean_rate') ).to be >0
-    expect( data.to_yaml ).to eq expected.to_yaml
+    expect( Hash[data.sort_by{|k,v| k }].to_yaml ).to eq expected.to_yaml
   end
 
   it 'serializes metrics data to json (pretty print)' do
@@ -50,6 +50,6 @@ describe Leafy::Json::MetricsWriter do
     data = JSON.parse( data )
     expect( data['one'].delete('mean_rate') ).to be >0
     expect( data['two'].delete('mean_rate') ).to be >0
-    expect( data.to_yaml ).to eq expected.to_yaml
+    expect( Hash[data.sort_by{|k,v| k }].to_yaml ).to eq expected.to_yaml
   end
 end
