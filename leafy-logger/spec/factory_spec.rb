@@ -48,7 +48,7 @@ describe Leafy::Logger::Factory do
     subject.level = 'INFO'
     expect( subject.level ).to eq 'INFO'
 
-    subject.level 'DEBUG'    
+    subject.level 'DEBUG'
     expect( subject.level ).to eq 'DEBUG'
   end
 
@@ -61,7 +61,7 @@ describe Leafy::Logger::Factory do
     logger2.debug 'debug2'
     logger2.info 'good'
     logger2.warn 'good'
- 
+
     subject.stop
 
     lines = File.read( log ).split( /\n/ )
@@ -122,6 +122,10 @@ describe Leafy::Logger::Factory do
       expect( line ).to match /good/
     end
 
+  end
+
+  it 'uses ProxyLoggers' do
+    expect( logger1 ).to be_a Leafy::Logger::ProxyLogger
   end
 
   it 'fails on missing yaml configuration' do
