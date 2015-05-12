@@ -96,6 +96,40 @@ or with custom path
     health = Leafy::Health::Registry.new
     use Leafy::Rack::Health, health, '/admin/health'
 
+the json response looks like
+
+    {
+      "deadlock": {
+        "healthy": true,
+        "message": null
+      },
+      "elasticsearch": {
+        "healthy": false,
+        "message": 'error'
+      }
+    }
+
+if you want to add host info to your health report you can do so by adding the respective data to the middleware
+
+    Leafy::Rack::Health.hostinfo[ 'version' ] = '1.0'
+    Leafy::Rack::Health.hostinfo[ 'env' ] = 'staging'
+
+then the json response has slightly different structure
+
+     {
+       "host": {
+         "version": "",
+         "hostname": "localhost",
+         "env": "boot",
+       },
+       "checks": {
+          "deadlock": {
+            "healthy": true,
+            "message": null
+          }
+        }
+      }
+
 ### ping middleware
 
 under the path **/ping**

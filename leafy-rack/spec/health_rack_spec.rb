@@ -32,6 +32,11 @@ describe Leafy::Rack::Health do
     let( :report ) do
       { 'two' => { 'healthy' => true, 'message' => 'ok' } }
     end
+    let( :report_with_info ) do
+      { 'host' => { 'version' => '1.2.3' },
+        'checks' => report }
+    end
+    after { subject.instance_variable_set( :@info, nil ) }
 
     it 'has response' do
       status, headers, body = subject.response( health, {} )
@@ -41,6 +46,15 @@ describe Leafy::Rack::Health do
       expect( body.to_yaml ).to eq report.to_yaml
     end
 
+    it 'has response with hostinfo' do
+      subject.hostinfo[ 'version' ] = '1.2.3'
+      status, headers, body = subject.response( health, {} )
+      expect( status ).to eq 200
+      expect( headers.to_yaml).to eq expected_headers.to_yaml
+      body = JSON.parse( body.join )
+      expect( body.to_yaml ).to eq report_with_info.to_yaml
+    end
+
     it 'has pretty response' do
       status, headers, body = subject.response( health, { 'QUERY_STRING' => 'pretty' } )
       expect( status ).to eq 200
@@ -48,6 +62,16 @@ describe Leafy::Rack::Health do
       expect( body.join.count( "\n" ) ).to eq 5
       body = JSON.parse( body.join )
       expect( body.to_yaml ).to eq report.to_yaml
+    end
+    
+    it 'has pretty response with hostinfo' do
+      subject.hostinfo[ 'version' ] = '1.2.3'
+      status, headers, body = subject.response( health, { 'QUERY_STRING' => 'pretty' } )
+      expect( status ).to eq 200
+      expect( headers.to_yaml).to eq expected_headers.to_yaml
+      expect( body.join.count( "\n" ) ).to eq 10
+      body = JSON.parse( body.join )
+      expect( body.to_yaml ).to eq report_with_info.to_yaml
     end
   end
 
