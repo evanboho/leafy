@@ -26,7 +26,7 @@ describe Leafy::Instrumented::CollectedInstrumented do
       expected[ index ] = 1
       expect( stati ).to eq expected
 
-      expect( registry.metrics.meters.values.to_a[ index ].mean_rate ).to be > 50
+      expect( registry.metrics.meters.values.to_a[ index ].mean_rate ).to be > 30
     end
   end
 end
