@@ -6,6 +6,7 @@ env:
   - DIR=leafy-health
   - DIR=leafy-metrics
   - DIR=leafy-rack
+  - DIR=leafy-logger
   - DIR=examples/hellowarld
 
 gemfile: $DIR/Gemfile
