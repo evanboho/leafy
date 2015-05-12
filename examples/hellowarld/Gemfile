@@ -5,6 +5,7 @@ source 'https://rubygems.org'
 gem 'leafy-metrics', :path => '../../leafy-metrics'
 gem 'leafy-health', :path => '../../leafy-health'
 gem 'leafy-rack', :path => '../../leafy-rack'
+gem 'leafy-logger', :path => '../../leafy-logger'
 
 gem 'sinatra'
 
