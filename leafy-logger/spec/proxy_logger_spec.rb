@@ -20,7 +20,8 @@ describe Leafy::Logger::ProxyLogger do
 
   describe '#fatal' do
     it 'should call #error' do
-      expect(proxy.fatal).to eq error_result
+      expect(proxy.fatal(:a)).to eq error_result
+      expect(logger).to have_received(:error).with(:a)
     end
   end
 end

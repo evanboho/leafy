@@ -18,8 +18,8 @@ module Leafy
       end
 
       # slf4j does not include the fatal level
-      def fatal
-        error
+      def fatal(*args)
+        error(*args)
       end
 
       # Provided for compatibility with the stdlib Logger interface. Not used, since the logger
