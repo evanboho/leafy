@@ -46,7 +46,7 @@ describe Leafy::Logger do
 
       factory.stop
 
-      if not system("netstat -uln |grep :514")
+      if File.exists?( '/var/log/syslog' )
         last = File.read( '/var/log/syslog' ).split( /\n/ ).last
         expect(last).to match /info$/
       end
@@ -67,7 +67,7 @@ describe Leafy::Logger do
 
       factory.stop
 
-      if not system("netstat -uln |grep :514") and File.exist?( '/var/log/auth.log' )
+      if File.exists?( '/var/log/syslog' ) and File.exist?( '/var/log/auth.log' )
         last = File.read( '/var/log/auth.log' ).split( /\n/ ).last
         expect(last).to match /info$/
       end
