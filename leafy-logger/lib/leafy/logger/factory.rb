@@ -1,5 +1,6 @@
 require 'leafy/logger'
 require 'leafy/logger/appender_factories'
+require 'leafy/logger/proxy_logger'
 require 'yaml'
 require 'stringio'
 require 'jruby/synchronized'
@@ -22,7 +23,7 @@ module Leafy
       end
 
       def self.get_logger( name )
-        org.slf4j.LoggerFactory.get_logger name
+        ProxyLogger.new( org.slf4j.LoggerFactory.get_logger( name ) )
       end
 
       def self.bootstrap
