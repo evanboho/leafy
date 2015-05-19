@@ -1,12 +1,9 @@
 #-*- mode: ruby -*-
 
-require 'maven/ruby/maven'
-
-mvn = Maven::Ruby::Maven.new
-
+require 'ruby-maven'
 desc "Pack leafy-metrics.jar with the compiled classes"
 task :jar do
-  mvn.prepare_package '-Dmaven.test.skip'
+  RubyMaven.exec('prepare-package', '-Dmaven.test.skip')
 end
 
 require "rspec/core/rake_task"

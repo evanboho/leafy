@@ -38,7 +38,7 @@ module Leafy
         registry.register_meter( name + ".total", metrics.total )
         true
       rescue => e
-        if JRUBY_VERSION.starts_with?( '1.7.1' )
+        if JRUBY_VERSION.start_with?( '1.7.1' )
           warn 'need jruby version 1.7.20 or newer'
         else
           puts e.message
