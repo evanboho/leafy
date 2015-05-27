@@ -1,4 +1,6 @@
 language: ruby
+before_script:
+  - export MAVEN_SKIP_RC=true
 rvm:
   - jruby-1.7.20
   - jruby-9.0.0.0.pre2
