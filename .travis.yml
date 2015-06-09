@@ -18,8 +18,8 @@ script: bundle exec rake
 
 matrix:
   allow_failures:
-#    - env: DIR=examples/hellowarld
-#      rvm: jruby-9.0.0.0-pre1
+    - env: DIR=leafy-metrics
+      rvm: jruby-9.0.0.0.pre2
 
 branches:
   only:
