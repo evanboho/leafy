@@ -26,9 +26,7 @@ Gem::Specification.new do |s|
   s.requirements << "jar org.jruby:jruby-stdlib, 1.7.20, :scope => :provided"
 
   s.add_runtime_dependency 'jar-dependencies', '~> 0.1'
-  s.add_development_dependency 'ruby-maven', '~> 3.3.0'
-  # needed since the ruby-maven-3.3.0 misses the dependency to ruby-maven-libs
-  s.add_development_dependency 'ruby-maven-libs', '~> 3.3.0'
+  s.add_development_dependency 'ruby-maven', '~> 3.3'
   s.add_development_dependency 'rspec', '~> 3.1'
   s.add_development_dependency 'yard', '~> 0.8'
   s.add_development_dependency 'rake', '~> 10.2'
