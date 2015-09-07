@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.requirements << 'jar io.dropwizard.metrics:metrics-json, 3.1.0'
   s.requirements << 'jar io.dropwizard.metrics:metrics-jvm, 3.1.0'
 
-  s.add_runtime_dependency 'jar-dependencies', '~> 0.1.8'
+  s.add_runtime_dependency 'jar-dependencies', '~> 0.1'
   s.add_runtime_dependency 'leafy-metrics', "~> #{Leafy::Rack::VERSION}"
   s.add_runtime_dependency 'leafy-health',  "~> #{Leafy::Rack::VERSION}"
   s.add_runtime_dependency 'leafy-logger', "~> #{Leafy::Rack::VERSION}"
