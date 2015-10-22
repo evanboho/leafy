@@ -28,4 +28,8 @@ adjust the version in
 * [leafy-rack/lib/leafy/rack/version.rb](https://github.com/lookout/leafy/blob/master/leafy-rack/lib/leafy/rack/version.rb)
 * [leafy-logger/lib/leafy/logger/version.rb](https://github.com/lookout/leafy/blob/master/leafy-logger/lib/leafy/logger/version.rb)
 
-now build and push each gem
+now build and push each gem with
+```
+mvn deploy
+```
+(note that maven POM is the Mavenfile or the respective gemspec files inside the submodules)
